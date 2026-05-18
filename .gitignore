@@ -205,3 +205,19 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Project-specific artifacts
+models/*.pt
+models/cache/*
+!models/.gitkeep
+!models/cache/.gitkeep
+
+# Frontend
+dashboard/frontend/node_modules/
+dashboard/frontend/dist/
+dashboard/frontend/.vite/
+*.local
+
+# IDE
+.vscode/
+.idea/

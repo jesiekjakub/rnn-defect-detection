@@ -1,0 +1,51 @@
+services:
+  # One-shot training service; activate with `--profile training`. Mounts the
+  # models volume so checkpoints survive into the backend service.
+  trainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    profiles: ["training"]
+    volumes:
+      - models:/app/models
+    environment:
+      - DEVICE=${DEVICE:-cpu}
+    command: >
+      sh -c "python -m rnn_defect_detection train --approach attention --quick &&
+             python -m rnn_defect_detection train --approach seq2seq --quick"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${DASHBOARD_PORT:-8000}:8000"
+    volumes:
+      - models:/app/models
+    environment:
+      - DASHBOARD_HOST=0.0.0.0
+      - DASHBOARD_PORT=8000
+      - MODELS_DIR=/app/models
+      - DEVICE=${DEVICE:-cpu}
+      - N_PRECOMPUTE_SAMPLES=${N_PRECOMPUTE_SAMPLES:-10000}
+      - PRECOMPUTE_SEED=${PRECOMPUTE_SEED:-2026}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:5173}
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request, sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health', timeout=2).status == 200 else 1)\""]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 60s
+
+  frontend:
+    build:
+      context: ./dashboard/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  models:

@@ -1,0 +1,70 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-defect-0: #ef4444;
+  --color-defect-1: #3b82f6;
+  --color-defect-2: #22c55e;
+  --color-defect-3: #f97316;
+  --color-defect-4: #a855f7;
+
+  --color-accent: #22d3ee;
+  --color-accent-soft: rgba(34, 211, 238, 0.12);
+
+  --color-surface: #0b1220;
+  --color-surface-elevated: #111c31;
+  --color-surface-border: rgba(148, 163, 184, 0.14);
+}
+
+:root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+
+html, body, #app {
+  height: 100%;
+}
+
+/* Plotly default modebar is loud; tone it down to fit the dark surface. */
+.modebar {
+  background: transparent !important;
+}
+.modebar-btn path {
+  fill: rgba(148, 163, 184, 0.5) !important;
+}
+.modebar-btn.active path,
+.modebar-btn:hover path {
+  fill: var(--color-accent) !important;
+}
+
+.card {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-surface-border);
+  border-radius: 14px;
+}
+
+.section-title {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.7);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
